@@ -40,7 +40,7 @@ class TranslatorTest extends PHPUnit_Framework_TestCase
         /**
          * Test that nplural=3 plural translation check comes up with the correct translation key.
          */
-        $this->assertEquals('1 plik',      $t->ngettext("one file", "multiple files", 1), "plural calculation result bad");
+        $this->assertEquals('1 plik', $t->ngettext("one file", "multiple files", 1), "plural calculation result bad");
         $this->assertEquals('2,3,4 pliki', $t->ngettext("one file", "multiple files", 2), "plural calculation result bad");
         $this->assertEquals('2,3,4 pliki', $t->ngettext("one file", "multiple files", 3), "plural calculation result bad");
         $this->assertEquals('2,3,4 pliki', $t->ngettext("one file", "multiple files", 4), "plural calculation result bad");

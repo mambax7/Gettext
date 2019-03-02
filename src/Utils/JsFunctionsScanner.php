@@ -130,6 +130,7 @@ class JsFunctionsScanner extends FunctionsScanner
                             continue 3;
                     }
 
+                    // no break
                 case ',':
                     switch ($this->status()) {
                         case 'function':
