@@ -1,4 +1,5 @@
 <?php
+
 namespace Gettext\Utils;
 
 use Exception;
@@ -37,33 +38,30 @@ abstract class FunctionsScanner
                         continue 2;
                     }
                     $original = $args[0];
-                    if ($original !== '') {
+                    if ('' !== $original) {
                         $translation = $translations->insert('', $original);
                     }
                     break;
-
                 case 'n__':
                     if (!isset($args[1])) {
                         continue 2;
                     }
                     $original = $args[0];
                     $plural = $args[1];
-                    if ($original !== '') {
+                    if ('' !== $original) {
                         $translation = $translations->insert('', $original, $plural);
                     }
                     break;
-
                 case 'p__':
                     if (!isset($args[1])) {
                         continue 2;
                     }
                     $context = $args[0];
                     $original = $args[1];
-                    if ($original !== '') {
+                    if ('' !== $original) {
                         $translation = $translations->insert($context, $original);
                     }
                     break;
-
                 default:
                     throw new Exception('Not valid functions');
             }

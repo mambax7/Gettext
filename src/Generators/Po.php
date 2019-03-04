@@ -1,4 +1,5 @@
 <?php
+
 namespace Gettext\Generators;
 
 use Gettext\Translations;
@@ -10,13 +11,13 @@ class Po extends Generator implements GeneratorInterface
      */
     public static function toString(Translations $translations)
     {
-        $lines = array('msgid ""', 'msgstr ""');
+        $lines = ['msgid ""', 'msgstr ""'];
 
         $headers = $translations->getHeaders();
         $headers['PO-Revision-Date'] = date('c');
 
         foreach ($headers as $name => $value) {
-            $lines[] = '"'.$name.': '.$value.'\\n"';
+            $lines[] = '"' . $name . ': ' . $value . '\\n"';
         }
 
         $lines[] = '';
@@ -25,28 +26,28 @@ class Po extends Generator implements GeneratorInterface
         foreach ($translations as $translation) {
             if ($translation->hasComments()) {
                 foreach ($translation->getComments() as $comment) {
-                    $lines[] = '# '.$comment;
+                    $lines[] = '# ' . $comment;
                 }
             }
 
             if ($translation->hasExtractedComments()) {
                 foreach ($translation->getExtractedComments() as $comment) {
-                    $lines[] = '#. '.$comment;
+                    $lines[] = '#. ' . $comment;
                 }
             }
 
             if ($translation->hasReferences()) {
                 foreach ($translation->getReferences() as $reference) {
-                    $lines[] = '#: '.$reference[0].(!is_null($reference[1]) ? ':'.$reference[1] : null);
+                    $lines[] = '#: ' . $reference[0] . (null !== $reference[1] ? ':' . $reference[1] : null);
                 }
             }
 
             if ($translation->hasFlags()) {
-                $lines[] = '#, '.implode(',', $translation->getFlags());
+                $lines[] = '#, ' . implode(',', $translation->getFlags());
             }
 
             if ($translation->hasContext()) {
-                $lines[] = 'msgctxt '.self::quote($translation->getContext());
+                $lines[] = 'msgctxt ' . self::quote($translation->getContext());
             }
 
             self::addLines($lines, 'msgid', $translation->getOriginal());
@@ -56,7 +57,7 @@ class Po extends Generator implements GeneratorInterface
                 self::addLines($lines, 'msgstr[0]', $translation->getTranslation());
 
                 foreach ($translation->getPluralTranslation() as $k => $v) {
-                    self::addLines($lines, 'msgstr['.($k + 1).']', $v);
+                    self::addLines($lines, 'msgstr[' . ($k + 1) . ']', $v);
                 }
             } else {
                 self::addLines($lines, 'msgstr', $translation->getTranslation());
@@ -77,7 +78,7 @@ class Po extends Generator implements GeneratorInterface
      */
     private static function quote($string)
     {
-        return '"'.str_replace(array('\\', "\r", "\n", "\t", '"'), array('\\\\', '', '\n', '\t', '\\"'), $string).'"';
+        return '"' . str_replace(['\\', "\r", "\n", "\t", '"'], ['\\\\', '', '\n', '\t', '\\"'], $string) . '"';
     }
 
     /**
@@ -96,7 +97,7 @@ class Po extends Generator implements GeneratorInterface
             if ($k === $last) {
                 $lines[$k] = self::quote($line);
             } else {
-                $lines[$k] = self::quote($line."\n");
+                $lines[$k] = self::quote($line . "\n");
             }
         }
 
@@ -114,10 +115,10 @@ class Po extends Generator implements GeneratorInterface
     {
         $newLines = self::multilineQuote($value);
 
-        if (count($newLines) === 1) {
-            $lines[] = $name.' '.$newLines[0];
+        if (1 === count($newLines)) {
+            $lines[] = $name . ' ' . $newLines[0];
         } else {
-            $lines[] = $name.' ""';
+            $lines[] = $name . ' ""';
 
             foreach ($newLines as $line) {
                 $lines[] = $line;

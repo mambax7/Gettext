@@ -1,4 +1,5 @@
 <?php
+
 namespace Gettext\Generators;
 
 use Gettext\Translations;
@@ -11,7 +12,7 @@ interface GeneratorInterface
      * @param Translations $translations
      * @param string       $file
      *
-     * @return boolean
+     * @return bool
      */
     public static function toFile(Translations $translations, $file);
 

@@ -5,7 +5,7 @@ class LocalesTest extends PHPUnit_Framework_TestCase
     public function testPlurals()
     {
         //Extract translations
-        $translations = Gettext\Extractors\Po::fromFile(__DIR__.'/files/plurals.po');
+        $translations = Gettext\Extractors\Po::fromFile(__DIR__ . '/files/plurals.po');
         $t = $translations->find(null, 'one file');
 
         $this->assertInstanceOf('Gettext\\Translations', $translations);

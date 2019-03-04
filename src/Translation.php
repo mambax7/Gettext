@@ -1,4 +1,5 @@
 <?php
+
 namespace Gettext;
 
 /**
@@ -10,11 +11,11 @@ class Translation
     protected $original;
     protected $translation = '';
     protected $plural;
-    protected $pluralTranslation = array();
-    protected $references = array();
-    protected $comments = array();
-    protected $extractedComments = array();
-    protected $flags = array();
+    protected $pluralTranslation = [];
+    protected $references = [];
+    protected $comments = [];
+    protected $extractedComments = [];
+    protected $flags = [];
     protected $translationCount;
 
     /**
@@ -55,11 +56,11 @@ class Translation
     {
         $new = clone $this;
 
-        if ($context !== null) {
+        if (null !== $context) {
             $new->context = (string) $context;
         }
 
-        if ($original !== null) {
+        if (null !== $original) {
             $new->original = (string) $original;
         }
 
@@ -82,7 +83,7 @@ class Translation
      * @param string $context
      * @param string $original
      *
-     * @return boolean
+     * @return bool
      */
     public function is($context, $original = '')
     {
@@ -102,11 +103,11 @@ class Translation
     /**
      * Checks if the original string is empty or not
      *
-     * @return boolean
+     * @return bool
      */
     public function hasOriginal()
     {
-        return ($this->original !== '') ? true : false;
+        return ('' !== $this->original) ? true : false;
     }
 
     /**
@@ -132,11 +133,11 @@ class Translation
     /**
      * Checks if the translation string is empty or not
      *
-     * @return boolean
+     * @return bool
      */
     public function hasTranslation()
     {
-        return ($this->translation !== '') ? true : false;
+        return ('' !== $this->translation) ? true : false;
     }
 
     /**
@@ -164,18 +165,18 @@ class Translation
     /**
      * Checks if the plural translation string is empty or not
      *
-     * @return boolean
+     * @return bool
      */
     public function hasPlural()
     {
-        return ($this->plural !== '') ? true : false;
+        return ('' !== $this->plural) ? true : false;
     }
 
     /**
      * Set a new plural translation
      *
      * @param string  $plural The plural string to add
-     * @param integer $key    The key of the plural translation.
+     * @param int $key    The key of the plural translation.
      */
     public function setPluralTranslation($plural, $key = 0)
     {
@@ -186,13 +187,13 @@ class Translation
     /**
      * Gets one or all plural translations
      *
-     * @param integer|null $key The key to return. If is null, return all translations
+     * @param int|null $key The key to return. If is null, return all translations
      *
      * @return string|array
      */
     public function getPluralTranslation($key = null)
     {
-        if ($key === null) {
+        if (null === $key) {
             return $this->pluralTranslation;
         }
 
@@ -202,11 +203,11 @@ class Translation
     /**
      * Checks if there are any plural translation
      *
-     * @return boolean
+     * @return bool
      */
     public function hasPluralTranslation()
     {
-        return implode('', $this->pluralTranslation) !== '';
+        return '' !== implode('', $this->pluralTranslation);
     }
 
     /**
@@ -214,7 +215,7 @@ class Translation
      */
     public function deletePluralTranslation()
     {
-        $this->pluralTranslation = array();
+        $this->pluralTranslation = [];
 
         $this->normalizeTranslationCount();
     }
@@ -222,11 +223,11 @@ class Translation
     /**
      * Set the number of singular + plural translations allowed
      *
-     * @param integer $count
+     * @param int $count
      */
     public function setTranslationCount($count)
     {
-        $this->translationCount = is_null($count) ? null : intval($count);
+        $this->translationCount = null === $count ? null : intval($count);
 
         $this->normalizeTranslationCount();
     }
@@ -235,7 +236,7 @@ class Translation
      * Returns the number of singular + plural translations
      * Returns null if this Translation is not a plural one
      *
-     * @return integer|null
+     * @return int|null
      */
     public function getTranslationCount()
     {
@@ -247,7 +248,7 @@ class Translation
      */
     protected function normalizeTranslationCount()
     {
-        if ($this->translationCount === null) {
+        if (null === $this->translationCount) {
             return;
         }
 
@@ -261,7 +262,7 @@ class Translation
                 $this->pluralTranslation = array_slice($this->pluralTranslation, 0, $allowed);
             }
         } else {
-            $this->pluralTranslation = array();
+            $this->pluralTranslation = [];
         }
     }
 
@@ -278,29 +279,29 @@ class Translation
     /**
      * Checks if the context is empty or not
      *
-     * @return boolean
+     * @return bool
      */
     public function hasContext()
     {
-        return (isset($this->context) && ($this->context !== '')) ? true : false;
+        return (isset($this->context) && ('' !== $this->context)) ? true : false;
     }
 
     /**
      * Adds a new reference for this translation
      *
      * @param string       $filename The file path where the translation has been found
-     * @param null|integer $line     The line number where the translation has been found
+     * @param null|int $line     The line number where the translation has been found
      */
     public function addReference($filename, $line = null)
     {
         $key = "{$filename}:{$line}";
-        $this->references[$key] = array($filename, $line);
+        $this->references[$key] = [$filename, $line];
     }
 
     /**
      * Checks if the translation has any reference
      *
-     * @return boolean
+     * @return bool
      */
     public function hasReferences()
     {
@@ -322,7 +323,7 @@ class Translation
      */
     public function deleteReferences()
     {
-        $this->references = array();
+        $this->references = [];
     }
 
     /**
@@ -338,7 +339,7 @@ class Translation
     /**
      * Checks if the translation has any comment
      *
-     * @return boolean
+     * @return bool
      */
     public function hasComments()
     {
@@ -360,7 +361,7 @@ class Translation
      */
     public function deleteComments()
     {
-        $this->comments = array();
+        $this->comments = [];
     }
 
     /**
@@ -376,7 +377,7 @@ class Translation
     /**
      * Checks if the translation has any extracted comment
      *
-     * @return boolean
+     * @return bool
      */
     public function hasExtractedComments()
     {
@@ -398,7 +399,7 @@ class Translation
      */
     public function deleteExtractedComments()
     {
-        $this->extractedComments = array();
+        $this->extractedComments = [];
     }
 
     /**
@@ -414,7 +415,7 @@ class Translation
     /**
      * Checks if the translation has any flag
      *
-     * @return boolean
+     * @return bool
      */
     public function hasFlags()
     {
@@ -436,18 +437,18 @@ class Translation
      */
     public function deleteFlags()
     {
-        $this->flags = array();
+        $this->flags = [];
     }
 
     /**
      * Merges this translation with other translation
      *
      * @param Translation  $translation The translation to merge with
-     * @param integer|null $method      One or various Translations::MERGE_* constants to define how to merge the translations
+     * @param int|null $method      One or various Translations::MERGE_* constants to define how to merge the translations
      */
-    public function mergeWith(Translation $translation, $method = null)
+    public function mergeWith(self $translation, $method = null)
     {
-        if ($method === null) {
+        if (null === $method) {
             $method = Translations::$mergeDefault;
         }
 

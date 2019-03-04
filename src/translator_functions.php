@@ -12,7 +12,7 @@ function __($original)
 {
     $text = Translator::$current->gettext($original);
 
-    if (func_num_args() === 1) {
+    if (1 === func_num_args()) {
         return $text;
     }
 
@@ -34,7 +34,7 @@ function n__($original, $plural, $value)
 {
     $text = Translator::$current->ngettext($original, $plural, $value);
 
-    if (func_num_args() === 3) {
+    if (3 === func_num_args()) {
         return $text;
     }
 
@@ -55,7 +55,7 @@ function p__($context, $original)
 {
     $text = Translator::$current->pgettext($context, $original);
 
-    if (func_num_args() === 2) {
+    if (2 === func_num_args()) {
         return $text;
     }
 
@@ -76,7 +76,7 @@ function d__($domain, $original)
 {
     $text = Translator::dgettext($domain, $original);
 
-    if (func_num_args() === 2) {
+    if (2 === func_num_args()) {
         return $text;
     }
 
@@ -98,7 +98,7 @@ function dp__($domain, $context, $original)
 {
     $text = Translator::dpgettext($domain, $context, $original);
 
-    if (func_num_args() === 3) {
+    if (3 === func_num_args()) {
         return $text;
     }
 
@@ -122,7 +122,7 @@ function dnp__($domain, $context, $original, $plural, $value)
 {
     $text = Translator::dnpgettext($domain, $context, $original, $plural, $value);
 
-    if (func_num_args() === 5) {
+    if (5 === func_num_args()) {
         return $text;
     }
 

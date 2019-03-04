@@ -1,10 +1,10 @@
 <?php
+
 namespace Gettext\Extractors;
 
 use Gettext\Translations;
-use Twig_Loader_String;
 use Twig_Environment;
-use Twig_Extensions_Extension_I18n;
+use Twig_Loader_String;
 
 /**
  * Class to get gettext strings from twig files returning arrays
@@ -40,6 +40,7 @@ class Twig extends Extractor implements ExtractorInterface
      * This must be called before calling fromString()
      *
      * @param mixed Already initialised extension to add
+     * @param mixed $extension
      */
     public static function addExtension($extension)
     {
@@ -59,7 +60,8 @@ class Twig extends Extractor implements ExtractorInterface
      * Checks if a given Twig extension is already registered or not
      *
      * @param  string   Name of Twig extension to check
-     * @return boolean  Whether it has been registered already or not
+     * @param mixed $className
+     * @return bool  Whether it has been registered already or not
      */
     protected static function checkHasExtensionByClassName($className)
     {

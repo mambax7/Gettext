@@ -1,4 +1,5 @@
 <?php
+
 namespace Gettext\Extractors;
 
 use Gettext\Translations;
@@ -13,7 +14,7 @@ class Jed extends PhpArray implements ExtractorInterface
      */
     public static function fromString($string, Translations $translations = null, $file = '')
     {
-        if ($translations === null) {
+        if (null === $translations) {
             $translations = new Translations();
         }
 

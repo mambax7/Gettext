@@ -5,7 +5,7 @@ class BladeExtractorTest extends PHPUnit_Framework_TestCase
     public function testOne()
     {
         //Extract translations
-        $translations = Gettext\Extractors\Blade::fromFile(__DIR__.'/files/code.blade.php');
+        $translations = Gettext\Extractors\Blade::fromFile(__DIR__ . '/files/code.blade.php');
 
         $this->assertInstanceOf('Gettext\\Translations', $translations);
         $this->assertInstanceOf('Gettext\\Translation', $translations->find('context', 'text 1 with context'));

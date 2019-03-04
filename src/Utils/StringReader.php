@@ -1,4 +1,5 @@
 <?php
+
 namespace Gettext\Utils;
 
 class StringReader
@@ -15,7 +16,7 @@ class StringReader
     public function __construct($str)
     {
         $this->str = $str;
-        $this->strlen = strlen($this->str);
+        $this->strlen = mb_strlen($this->str);
     }
 
     /**
@@ -27,7 +28,7 @@ class StringReader
      */
     public function read($bytes)
     {
-        $data = substr($this->str, $this->pos, $bytes);
+        $data = mb_substr($this->str, $this->pos, $bytes);
 
         $this->seekto($this->pos + $bytes);
 

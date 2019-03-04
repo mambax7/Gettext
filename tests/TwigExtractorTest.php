@@ -5,7 +5,7 @@ class TwigExtractorTest extends PHPUnit_Framework_TestCase
     public function testOne()
     {
         //Extract translations
-        $translations = Gettext\Extractors\Twig::fromFile(__DIR__.'/files/code.twig.php');
+        $translations = Gettext\Extractors\Twig::fromFile(__DIR__ . '/files/code.twig.php');
 
         $this->assertInstanceOf('Gettext\\Translations', $translations);
         $this->assertInstanceOf('Gettext\\Translation', $translations->find(null, 'text 2'));

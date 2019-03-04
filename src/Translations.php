@@ -1,4 +1,5 @@
 <?php
+
 namespace Gettext;
 
 use Gettext\Languages\Language;
@@ -27,10 +28,13 @@ class Translations extends \ArrayObject
 
     /**
      * @see \ArrayObject::__construct()
+     * @param mixed $input
+     * @param mixed $flags
+     * @param mixed $iterator_class
      */
-    public function __construct($input = array(), $flags = 0, $iterator_class = 'ArrayIterator')
+    public function __construct($input = [], $flags = 0, $iterator_class = 'ArrayIterator')
     {
-        $this->headers = array(
+        $this->headers = [
             'Project-Id-Version' => '',
             'Report-Msgid-Bugs-To' => '',
             'Last-Translator' => '',
@@ -40,7 +44,7 @@ class Translations extends \ArrayObject
             'Content-Transfer-Encoding' => '8bit',
             'POT-Creation-Date' => date('c'),
             'PO-Revision-Date' => date('c'),
-        );
+        ];
         $this->headers[self::HEADER_LANGUAGE] = '';
         parent::__construct($input, $flags, $iterator_class);
     }
@@ -49,6 +53,8 @@ class Translations extends \ArrayObject
      * Magic method to create new instances using extractors
      * For example: Translations::fromMoFile($filename);
      *
+     * @param mixed $name
+     * @param mixed $arguments
      * @return Translations
      */
     public static function __callStatic($name, $arguments)
@@ -57,13 +63,15 @@ class Translations extends \ArrayObject
             throw new \Exception("The method $name does not exists");
         }
 
-        return call_user_func_array('Gettext\\Extractors\\'.$matches[1].'::from'.$matches[2], $arguments);
+        return call_user_func_array('Gettext\\Extractors\\' . $matches[1] . '::from' . $matches[2], $arguments);
     }
 
     /**
      * Magic method to export the translations to a specific format
      * For example: $translations->toMoFile($filename);
      *
+     * @param mixed $name
+     * @param mixed $arguments
      * @return bool|string
      */
     public function __call($name, $arguments)
@@ -74,7 +82,7 @@ class Translations extends \ArrayObject
 
         array_unshift($arguments, $this);
 
-        return call_user_func_array('Gettext\\Generators\\'.$matches[1].'::to'.$matches[2], $arguments);
+        return call_user_func_array('Gettext\\Generators\\' . $matches[1] . '::to' . $matches[2], $arguments);
     }
 
     /**
@@ -82,7 +90,7 @@ class Translations extends \ArrayObject
      */
     public function __clone()
     {
-        $array = array();
+        $array = [];
 
         foreach ($this as $key => $translation) {
             $array[$key] = clone $translation;
@@ -126,7 +134,7 @@ class Translations extends \ArrayObject
     /**
      * Set the plural definition
      *
-     * @param integer $count
+     * @param int $count
      * @param string  $rule
      */
     public function setPluralForms($count, $rule)
@@ -144,7 +152,7 @@ class Translations extends \ArrayObject
         $header = $this->getHeader(self::HEADER_PLURAL);
 
         if ($header && preg_match('/^nplurals\s*=\s*(\d+)\s*;\s*plural\s*=\s*([^;]+)\s*;$/', $header, $matches)) {
-            return array(intval($matches[1]), $matches[2]);
+            return [intval($matches[1]), $matches[2]];
         }
     }
 
@@ -159,7 +167,7 @@ class Translations extends \ArrayObject
         $name = trim($name);
         $this->headers[$name] = trim($value);
 
-        if ($name === self::HEADER_PLURAL) {
+        if (self::HEADER_PLURAL === $name) {
             if ($forms = $this->getPluralForms()) {
                 $this->translationCount = $forms[0];
 
@@ -199,7 +207,7 @@ class Translations extends \ArrayObject
      */
     public function deleteHeaders()
     {
-        $this->headers = array();
+        $this->headers = [];
     }
 
     /**
@@ -227,7 +235,7 @@ class Translations extends \ArrayObject
      *
      * @param string $language
      *
-     * @return boolean Returns true if the plural rules has been updated, false if $language hasn't been recognized
+     * @return bool Returns true if the plural rules has been updated, false if $language hasn't been recognized
      */
     public function setLanguage($language)
     {
@@ -245,13 +253,13 @@ class Translations extends \ArrayObject
     /**
      * Checks whether the language is empty or not
      *
-     * @return boolean
+     * @return bool
      */
     public function hasLanguage()
     {
         $language = $this->getLanguage();
 
-        return (is_string($language) && ($language !== '')) ? true : false;
+        return (is_string($language) && ('' !== $language)) ? true : false;
     }
 
     /**
@@ -277,13 +285,13 @@ class Translations extends \ArrayObject
     /**
      * Checks whether the domain is empty or not
      *
-     * @return boolean
+     * @return bool
      */
     public function hasDomain()
     {
         $domain = $this->getDomain();
 
-        return (is_string($domain) && ($domain !== '')) ? true : false;
+        return (is_string($domain) && ('' !== $domain)) ? true : false;
     }
 
     /**
@@ -323,11 +331,11 @@ class Translations extends \ArrayObject
      * Merges this translations with other translations
      *
      * @param Translations $translations The translations instance to merge with
-     * @param integer|null $method       One or various Translations::MERGE_* constants to define how to merge the translations
+     * @param int|null $method       One or various Translations::MERGE_* constants to define how to merge the translations
      */
-    public function mergeWith(Translations $translations, $method = null)
+    public function mergeWith(self $translations, $method = null)
     {
-        if ($method === null) {
+        if (null === $method) {
             $method = self::$mergeDefault;
         }
 
@@ -339,7 +347,7 @@ class Translations extends \ArrayObject
             }
         }
 
-        $add = (boolean) ($method & self::MERGE_ADD);
+        $add = (bool) ($method & self::MERGE_ADD);
 
         foreach ($translations as $entry) {
             if (($existing = $this->find($entry))) {
@@ -350,7 +358,7 @@ class Translations extends \ArrayObject
         }
 
         if ($method & self::MERGE_REMOVE) {
-            $filtered = array();
+            $filtered = [];
 
             foreach ($this as $entry) {
                 if ($translations->find($entry)) {

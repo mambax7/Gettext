@@ -1,4 +1,5 @@
 <?php
+
 namespace Gettext\Generators;
 
 use Gettext\Translations;
@@ -12,14 +13,14 @@ class Mo extends Generator implements GeneratorInterface
      */
     public static function toString(Translations $translations)
     {
-        $array = array();
+        $array = [];
         $headers = '';
 
         foreach ($translations->getHeaders() as $headerName => $headerValue) {
             $headers .= "$headerName: $headerValue\n";
         }
 
-        if ($headers !== '') {
+        if ('' !== $headers) {
             $array[''] = $headers;
         }
 
@@ -29,7 +30,7 @@ class Mo extends Generator implements GeneratorInterface
             }
 
             if ($translation->hasContext()) {
-                $originalString = $translation->getContext()."\x04".$translation->getOriginal();
+                $originalString = $translation->getContext() . "\x04" . $translation->getOriginal();
             } else {
                 $originalString = $translation->getOriginal();
             }
@@ -41,8 +42,8 @@ class Mo extends Generator implements GeneratorInterface
         $numEntries = count($array);
         $originalsTable = '';
         $translationsTable = '';
-        $originalsIndex = array();
-        $translationsIndex = array();
+        $originalsIndex = [];
+        $translationsIndex = [];
 
         foreach ($array as $originalString => $translation) {
             if (is_string($translation)) {
@@ -51,19 +52,19 @@ class Mo extends Generator implements GeneratorInterface
             } else {
                 /* @var $translation \Gettext\Translation */
                 if ($translation->hasPlural()) {
-                    $originalString .= "\x00".$translation->getPlural();
+                    $originalString .= "\x00" . $translation->getPlural();
                 }
                 $translationString = $translation->getTranslation();
 
                 if ($translation->hasPluralTranslation()) {
-                    $translationString .= "\x00".implode("\x00", $translation->getPluralTranslation());
+                    $translationString .= "\x00" . implode("\x00", $translation->getPluralTranslation());
                 }
             }
 
-            $originalsIndex[] = array('relativeOffset' => strlen($originalsTable), 'length' => strlen($originalString));
-            $originalsTable .= $originalString."\x00";
-            $translationsIndex[] = array('relativeOffset' => strlen($translationsTable), 'length' => strlen($translationString));
-            $translationsTable .= $translationString."\x00";
+            $originalsIndex[] = ['relativeOffset' => mb_strlen($originalsTable), 'length' => mb_strlen($originalString)];
+            $originalsTable .= $originalString . "\x00";
+            $translationsIndex[] = ['relativeOffset' => mb_strlen($translationsTable), 'length' => mb_strlen($translationString)];
+            $translationsTable .= $translationString . "\x00";
         }
 
         // Offset of table with the original strings index: right after the header (which is 7 words)
@@ -82,7 +83,7 @@ class Mo extends Generator implements GeneratorInterface
         $originalsStringsOffset = $translationsIndexOffset + $translationsIndexSize;
 
         // Translations start after the keys
-        $translationsStringsOffset = $originalsStringsOffset + strlen($originalsTable);
+        $translationsStringsOffset = $originalsStringsOffset + mb_strlen($originalsTable);
 
         // Let's generate the .mo file binary data
         $mo = '';

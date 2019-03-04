@@ -5,7 +5,7 @@ class PhpCodeExtractorTest extends PHPUnit_Framework_TestCase
     public function testOne()
     {
         //Extract translations
-        $translations = Gettext\Extractors\PhpCode::fromFile(__DIR__.'/files/phpcode.php');
+        $translations = Gettext\Extractors\PhpCode::fromFile(__DIR__ . '/files/phpcode.php');
 
         $this->assertInstanceOf('Gettext\\Translations', $translations);
         $this->assertInstanceOf('Gettext\\Translation', $translations->find('context', 'text 1 with context'));
@@ -24,7 +24,7 @@ class PhpCodeExtractorTest extends PHPUnit_Framework_TestCase
     public function testMultiline()
     {
         //Extract translations
-        $translations = Gettext\Extractors\PhpCode::fromFile(__DIR__.'/files/phpcode.php');
+        $translations = Gettext\Extractors\PhpCode::fromFile(__DIR__ . '/files/phpcode.php');
 
         $original = <<<EOT
 <div id="blog" class="container">

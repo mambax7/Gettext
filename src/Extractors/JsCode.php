@@ -1,4 +1,5 @@
 <?php
+
 namespace Gettext\Extractors;
 
 use Gettext\Translations;
@@ -9,18 +10,18 @@ use Gettext\Utils\JsFunctionsScanner;
  */
 class JsCode extends Extractor implements ExtractorInterface
 {
-    public static $functions = array(
+    public static $functions = [
         '__' => '__',
         'n__' => 'n__',
         'p__' => 'p__',
-    );
+    ];
 
     /**
      * {@inheritDoc}
      */
     public static function fromString($string, Translations $translations = null, $file = '')
     {
-        if ($translations === null) {
+        if (null === $translations) {
             $translations = new Translations();
         }
 

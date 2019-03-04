@@ -1,4 +1,5 @@
 <?php
+
 namespace Gettext\Extractors;
 
 use Gettext\Translations;

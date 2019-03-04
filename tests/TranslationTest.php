@@ -5,7 +5,7 @@ class TranslationTest extends PHPUnit_Framework_TestCase
     public function testReferences()
     {
         //Extract translations
-        $translations = Gettext\Extractors\PhpCode::fromFile(__DIR__.'/files/phpcode.php');
+        $translations = Gettext\Extractors\PhpCode::fromFile(__DIR__ . '/files/phpcode.php');
         $translation = $translations->find(null, 'text 10 with plural');
 
         $this->assertInstanceOf('Gettext\\Translation', $translation);
@@ -14,7 +14,7 @@ class TranslationTest extends PHPUnit_Framework_TestCase
 
         $this->assertCount(1, $references);
         $this->assertTrue($translation->hasReferences());
-        $this->assertEquals(__DIR__.'/files/phpcode.php', $references[0][0]);
+        $this->assertEquals(__DIR__ . '/files/phpcode.php', $references[0][0]);
         $this->assertEquals(19, $references[0][1]);
 
         $translation->deleteReferences();
@@ -24,7 +24,7 @@ class TranslationTest extends PHPUnit_Framework_TestCase
     public function testPlurals()
     {
         //Extract translations
-        $translations = Gettext\Extractors\PhpCode::fromFile(__DIR__.'/files/phpcode.php');
+        $translations = Gettext\Extractors\PhpCode::fromFile(__DIR__ . '/files/phpcode.php');
         $translation = $translations->find(null, 'text 10 with plural');
 
         $this->assertTrue($translation->hasPlural());

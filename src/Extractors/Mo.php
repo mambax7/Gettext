@@ -1,4 +1,5 @@
 <?php
+
 namespace Gettext\Extractors;
 
 use Gettext\Translations;
@@ -18,14 +19,14 @@ class Mo extends Extractor implements ExtractorInterface
      */
     public static function fromString($string, Translations $translations = null, $file = '')
     {
-        if ($translations === null) {
+        if (null === $translations) {
             $translations = new Translations();
         }
 
         $stream = new StringReader($string);
         $magic = self::readInt($stream, 'V');
 
-        if (($magic === self::MAGIC1) || ($magic === self::MAGIC3)) { //to make sure it works for 64-bit platforms
+        if ((self::MAGIC1 === $magic) || (self::MAGIC3 === $magic)) { //to make sure it works for 64-bit platforms
             $byteOrder = 'V'; //low endian
         } elseif ($magic === (self::MAGIC2 & 0xFFFFFFFF)) {
             $byteOrder = 'N'; //big endian
@@ -50,10 +51,10 @@ class Mo extends Extractor implements ExtractorInterface
             $stream->seekto($table_translations[$i * 2 + 2]);
             $translated = $stream->read($table_translations[$i * 2 + 1]);
 
-            if ($original === '') {
+            if ('' === $original) {
                 // Headers
                 foreach (explode("\n", $translated) as $headerLine) {
-                    if ($headerLine !== '') {
+                    if ('' !== $headerLine) {
                         $headerChunks = preg_split('/:\s*/', $headerLine, 2);
                         $translations->setHeader($headerChunks[0], isset($headerChunks[1]) ? $headerChunks[1] : '');
                     }
@@ -79,12 +80,12 @@ class Mo extends Extractor implements ExtractorInterface
 
                 $translation = $translations->insert($context, $original, $plural);
 
-                if ($translated !== '') {
-                    if ($plural === '') {
+                if ('' !== $translated) {
+                    if ('' === $plural) {
                         $translation->setTranslation($translated);
                     } else {
                         foreach (explode("\x00", $translated) as $pluralIndex => $pluralValue) {
-                            if ($pluralIndex === 0) {
+                            if (0 === $pluralIndex) {
                                 $translation->setTranslation($pluralValue);
                             } else {
                                 $translation->setPluralTranslation($pluralValue, $pluralIndex - 1);
@@ -104,7 +105,7 @@ class Mo extends Extractor implements ExtractorInterface
      */
     private static function readInt(StringReader $stream, $byteOrder)
     {
-        if (($read = $stream->read(4)) === false) {
+        if (false === ($read = $stream->read(4))) {
             return false;
         }
 
@@ -120,6 +121,6 @@ class Mo extends Extractor implements ExtractorInterface
      */
     private static function readIntArray(StringReader $stream, $byteOrder, $count)
     {
-        return unpack($byteOrder.$count, $stream->read(4 * $count));
+        return unpack($byteOrder . $count, $stream->read(4 * $count));
     }
 }

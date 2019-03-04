@@ -1,8 +1,9 @@
 <?php
+
 namespace Gettext\Extractors;
 
-use Gettext\Translations;
 use Gettext\Translation;
+use Gettext\Translations;
 
 /**
  * Class to get gettext strings from php files returning arrays
@@ -16,7 +17,7 @@ class Po extends Extractor implements ExtractorInterface
      */
     public static function fromString($string, Translations $translations = null, $file = '')
     {
-        if ($translations === null) {
+        if (null === $translations) {
             $translations = new Translations();
         }
 
@@ -30,7 +31,7 @@ class Po extends Extractor implements ExtractorInterface
 
             $line = self::fixMultiLines($line, $lines, $i);
 
-            if ($line === '') {
+            if ('' === $line) {
                 if ($translation->is('', '')) {
                     self::parseHeaders($translation->getTranslation(), $translations);
                 } elseif ($translation->hasOriginal()) {
@@ -50,19 +51,16 @@ class Po extends Extractor implements ExtractorInterface
                     $translation->addComment($data);
                     $append = null;
                     break;
-
                 case '#.':
                     $translation->addExtractedComment($data);
                     $append = null;
                     break;
-
                 case '#,':
                     foreach (array_map('trim', explode(',', trim($data))) as $value) {
                         $translation->addFlag($value);
                     }
                     $append = null;
                     break;
-
                 case '#:':
                     foreach (preg_split('/\s+/', trim($data)) as $value) {
                         if (preg_match('/^(.+)(:(\d*))?$/U', $value, $matches)) {
@@ -71,66 +69,60 @@ class Po extends Extractor implements ExtractorInterface
                     }
                     $append = null;
                     break;
-
                 case 'msgctxt':
                     $translation = $translation->getClone(self::clean($data));
                     $append = 'Context';
                     break;
-
                 case 'msgid':
                     $translation = $translation->getClone(null, self::clean($data));
                     $append = 'Original';
                     break;
-
                 case 'msgid_plural':
                     $translation->setPlural(self::clean($data));
                     $append = 'Plural';
                     break;
-
                 case 'msgstr':
                 case 'msgstr[0]':
                     $translation->setTranslation(self::clean($data));
                     $append = 'Translation';
                     break;
-
                 case 'msgstr[1]':
                     $translation->setPluralTranslation(self::clean($data), 0);
                     $append = 'PluralTranslation';
                     break;
-
                 default:
-                    if (strpos($key, 'msgstr[') === 0) {
-                        $translation->setPluralTranslation(self::clean($data), intval(substr($key, 7, -1)) - 1);
+                    if (0 === mb_strpos($key, 'msgstr[')) {
+                        $translation->setPluralTranslation(self::clean($data), intval(mb_substr($key, 7, -1)) - 1);
                         $append = 'PluralTranslation';
                         break;
                     }
 
                     if (isset($append)) {
-                        if ($append === 'Context') {
-                            $translation = $translation->getClone($translation->getContext()."\n".self::clean($data));
+                        if ('Context' === $append) {
+                            $translation = $translation->getClone($translation->getContext() . "\n" . self::clean($data));
                             break;
                         }
 
-                        if ($append === 'Original') {
-                            $translation = $translation->getClone(null, $translation->getOriginal()."\n".self::clean($data));
+                        if ('Original' === $append) {
+                            $translation = $translation->getClone(null, $translation->getOriginal() . "\n" . self::clean($data));
                             break;
                         }
 
-                        if ($append === 'PluralTranslation') {
+                        if ('PluralTranslation' === $append) {
                             $key = count($translation->getPluralTranslation()) - 1;
-                            $translation->setPluralTranslation($translation->getPluralTranslation($key)."\n".self::clean($data), $key);
+                            $translation->setPluralTranslation($translation->getPluralTranslation($key) . "\n" . self::clean($data), $key);
                             break;
                         }
 
-                        $getMethod = 'get'.$append;
-                        $setMethod = 'set'.$append;
-                        $translation->$setMethod($translation->$getMethod()."\n".self::clean($data));
+                        $getMethod = 'get' . $append;
+                        $setMethod = 'set' . $append;
+                        $translation->$setMethod($translation->$getMethod() . "\n" . self::clean($data));
                     }
                     break;
             }
         }
 
-        if ($translation->hasOriginal() && !in_array($translation, iterator_to_array($translations))) {
+        if ($translation->hasOriginal() && !in_array($translation, iterator_to_array($translations), true)) {
             $translations[] = $translation;
         }
 
@@ -142,7 +134,7 @@ class Po extends Extractor implements ExtractorInterface
      * and possible continuations of a header entry
      *
      * @param  string  $line Line to parse
-     * @return boolean
+     * @return bool
      */
     private static function isHeaderDefinition($line)
     {
@@ -169,7 +161,7 @@ class Po extends Extractor implements ExtractorInterface
                 $translations->setHeader($currentHeader, $header[1]);
             } else {
                 $entry = $translations->getHeader($currentHeader);
-                $translations->setHeader($currentHeader, $entry.$line);
+                $translations->setHeader($currentHeader, $entry . $line);
             }
         }
     }
@@ -187,11 +179,11 @@ class Po extends Extractor implements ExtractorInterface
             return '';
         }
 
-        if ($str[0] === '"') {
-            $str = substr($str, 1, -1);
+        if ('"' === $str[0]) {
+            $str = mb_substr($str, 1, -1);
         }
 
-        return str_replace(array('\\n', '\\"', '\\t', '\\\\'), array("\n", '"', "\t", '\\'), $str);
+        return str_replace(['\\n', '\\"', '\\t', '\\\\'], ["\n", '"', "\t", '\\'], $str);
     }
 
     /**
@@ -199,18 +191,18 @@ class Po extends Extractor implements ExtractorInterface
      *
      * @param string  $line
      * @param array   $lines
-     * @param integer &$i
+     * @param int &$i
      *
      * @return string
      */
     private static function fixMultiLines($line, array $lines, &$i)
     {
-        for ($j = $i; $j<count($lines); $j++) {
-            if (substr($line, -1, 1) == '"'
-                && isset($lines[$j+1])
-                && substr(trim($lines[$j+1]), 0, 1) == '"'
+        for ($j = $i; $j < count($lines); $j++) {
+            if ('"' == mb_substr($line, -1, 1)
+                && isset($lines[$j + 1])
+                && '"' == mb_substr(trim($lines[$j + 1]), 0, 1)
             ) {
-                $line = substr($line, 0, -1).substr(trim($lines[$j+1]), 1);
+                $line = mb_substr($line, 0, -1) . mb_substr(trim($lines[$j + 1]), 1);
             } else {
                 $i = $j;
                 break;

@@ -1,4 +1,5 @@
 <?php
+
 namespace Gettext\Extractors;
 
 use Exception;
@@ -19,7 +20,7 @@ class PhpArray extends Extractor implements ExtractorInterface
      */
     public static function fromFile($file, Translations $translations = null)
     {
-        if ($translations === null) {
+        if (null === $translations) {
             $translations = new Translations();
         }
 
@@ -35,7 +36,7 @@ class PhpArray extends Extractor implements ExtractorInterface
      */
     public static function fromString($string, Translations $translations = null, $file = '')
     {
-        throw new Exception("PhpArray::fromString() cannot be called. Use PhpArray::fromFile()");
+        throw new Exception('PhpArray::fromString() cannot be called. Use PhpArray::fromFile()');
     }
 
     /**

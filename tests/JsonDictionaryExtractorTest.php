@@ -1,5 +1,5 @@
 <?php
-include_once dirname(__DIR__).'/src/autoloader.php';
+require_once dirname(__DIR__) . '/src/autoloader.php';
 
 class JsonDictionaryExtractorTest extends PHPUnit_Framework_TestCase
 {
@@ -11,7 +11,7 @@ class JsonDictionaryExtractorTest extends PHPUnit_Framework_TestCase
         $translations = Gettext\Translations::fromJsonDictionaryString($string);
 
         $this->assertInstanceOf('Gettext\\Translations', $translations);
-        $this->assertEquals(2, count($translations));
+        $this->assertCount(2, $translations);
 
         $translation = $translations->find('', 'water');
 

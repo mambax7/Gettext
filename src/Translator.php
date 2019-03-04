@@ -1,4 +1,5 @@
 <?php
+
 namespace Gettext;
 
 use Gettext\Generators\PhpArray;
@@ -8,20 +9,20 @@ class Translator
     public static $current;
 
     private $domain;
-    private $dictionary = array();
+    private $dictionary = [];
     private $context_glue = "\004";
-    private $plurals = array();
+    private $plurals = [];
 
     /**
      * Set a translation instance as global, to use it with the gettext functions
      *
      * @param Translator $translator
      */
-    public static function initGettextFunctions(Translator $translator)
+    public static function initGettextFunctions(self $translator)
     {
         self::$current = $translator;
 
-        include_once __DIR__.'/translator_functions.php';
+        require_once __DIR__ . '/translator_functions.php';
     }
 
     /**
@@ -73,10 +74,10 @@ class Translator
 
             // extract just the expression turn 'n' into a php variable '$n'.
             // Slap on a return keyword and semicolon at the end.
-            $this->plurals[$domain] = array(
+            $this->plurals[$domain] = [
                 'count' => (int) str_replace('nplurals=', '', $count),
-                'code' => str_replace('plural=', 'return ', str_replace('n', '$n', $code)).';',
-            );
+                'code' => str_replace('plural=', 'return ', str_replace('n', '$n', $code)) . ';',
+            ];
 
             $this->dictionary[$domain] = $translations;
         } else {
@@ -89,7 +90,7 @@ class Translator
      */
     public function clearTranslations()
     {
-        $this->dictionary = array();
+        $this->dictionary = [];
     }
 
     /**
@@ -103,7 +104,7 @@ class Translator
      */
     public function getTranslation($domain, $context, $original)
     {
-        $key = isset($context) ? $context.$this->context_glue.$original : $original;
+        $key = isset($context) ? $context . $this->context_glue . $original : $original;
 
         return isset($this->dictionary[$domain][$key]) ? $this->dictionary[$domain][$key] : false;
     }
@@ -203,7 +204,7 @@ class Translator
     {
         $translation = $this->getTranslation($domain, $context, $original);
 
-        if (isset($translation[1]) && $translation[1] !== '') {
+        if (isset($translation[1]) && '' !== $translation[1]) {
             return $translation[1];
         }
 
@@ -224,11 +225,11 @@ class Translator
         $key = $this->isPlural($domain, $value);
         $translation = $this->getTranslation($domain, $context, $original);
 
-        if (isset($translation[$key]) && $translation[$key] !== '') {
+        if (isset($translation[$key]) && '' !== $translation[$key]) {
             return $translation[$key];
         }
 
-        return ($key === 1) ? $original : $plural;
+        return (1 === $key) ? $original : $plural;
     }
 
     /**
@@ -243,7 +244,7 @@ class Translator
     {
         //Not loaded domain, use a fallback
         if (!isset($this->plurals[$domain])) {
-            return $n == 1 ? 1 : 2;
+            return 1 == $n ? 1 : 2;
         }
 
         if (!isset($this->plurals[$domain]['function'])) {
@@ -291,12 +292,12 @@ class Translator
         }
 
         $expression = $matches['expression'];
-        $success    = $matches['success'];
-        $failure    = $matches['failure'];
+        $success = $matches['success'];
+        $failure = $matches['failure'];
 
         // Go look for another terse if in the failure state.
         $failure = self::fixTerseIfs($failure, true);
-        $code = $expression.' ? '.$success.' : '.$failure;
+        $code = $expression . ' ? ' . $success . ' : ' . $failure;
 
         if ($inner) {
             return "($code)";

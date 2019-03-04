@@ -1,10 +1,11 @@
 <?php
+
 namespace Gettext\Utils;
 
 class JsFunctionsScanner extends FunctionsScanner
 {
     protected $code;
-    protected $status = array();
+    protected $status = [];
 
     /**
      * Constructor
@@ -21,11 +22,11 @@ class JsFunctionsScanner extends FunctionsScanner
      */
     public function getFunctions()
     {
-        $length = strlen($this->code);
+        $length = mb_strlen($this->code);
         $line = 1;
         $buffer = '';
-        $functions = array();
-        $bufferFunctions = array();
+        $functions = [];
+        $bufferFunctions = [];
         $char = null;
 
         for ($pos = 0; $pos < $length; $pos++) {
@@ -41,80 +42,68 @@ class JsFunctionsScanner extends FunctionsScanner
                         $this->upStatus();
                     }
                     break;
-
-                case "/":
+                case '/':
                     switch ($this->status()) {
                         case 'simple-quote':
                         case 'double-quote':
                         case 'line-comment':
                             break;
-
                         case 'block-comment':
-                            if ($prev === '*') {
+                            if ('*' === $prev) {
                                 $this->upStatus();
                             }
                             break;
-
                         default:
-                            if ($next === '/') {
+                            if ('/' === $next) {
                                 $this->downStatus('line-comment');
-                            } elseif ($next === '*') {
+                            } elseif ('*' === $next) {
                                 $this->downStatus('block-comment');
                             }
                             break;
                     }
                     break;
-
                 case "'":
                     switch ($this->status()) {
                         case 'simple-quote':
                             $this->upStatus();
                             break;
-
                         case 'line-comment':
                         case 'block-comment':
                             break;
-
                         default:
                             $this->downStatus('simple-quote');
                             break;
                     }
                     break;
-
                 case '"':
                     switch ($this->status()) {
                         case 'double-quote':
                             $this->upStatus();
                             break;
-
                         case 'line-comment':
                         case 'block-comment':
                             break;
-
                         default:
                             $this->downStatus('double-quote');
                             break;
                     }
                     break;
-
                 case '(':
                     switch ($this->status()) {
                         case 'double-quote':
                         case 'line-comment':
                         case 'block-comment':
                             break;
-
                         default:
                             if ($buffer && preg_match('/(\w+)$/', $buffer, $matches)) {
                                 $this->downStatus('function');
-                                array_unshift($bufferFunctions, array($matches[1], $line, array()));
+                                array_unshift($bufferFunctions, [$matches[1], $line, []]);
                                 $buffer = '';
                                 continue 3;
                             }
                             break;
                     }
                     break;
-
                 case ')':
                     switch ($this->status()) {
                         case 'function':
@@ -147,7 +136,6 @@ class JsFunctionsScanner extends FunctionsScanner
                 case 'line-comment':
                 case 'block-comment':
                     break;
-
                 default:
                     $buffer .= $char;
                     break;
@@ -162,7 +150,7 @@ class JsFunctionsScanner extends FunctionsScanner
      *
      * @param null|string $match To check whether the current status is this value
      *
-     * @return string|boolean
+     * @return string|bool
      */
     protected function status($match = null)
     {
@@ -204,14 +192,14 @@ class JsFunctionsScanner extends FunctionsScanner
      */
     protected static function prepareArgument($argument)
     {
-        if ($argument && ($argument[0] === '"' || $argument[0] === "'")) {
-            if ($argument[0] === '"') {
+        if ($argument && ('"' === $argument[0] || "'" === $argument[0])) {
+            if ('"' === $argument[0]) {
                 $argument = str_replace('\\"', '"', $argument);
             } else {
                 $argument = str_replace("\\'", "'", $argument);
             }
 
-            return substr($argument, 1, -1);
+            return mb_substr($argument, 1, -1);
         }
     }
 }

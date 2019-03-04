@@ -1,4 +1,5 @@
 <?php
+
 namespace Gettext\Generators;
 
 use Gettext\Translations;

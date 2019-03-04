@@ -1,4 +1,5 @@
 <?php
+
 namespace Gettext\Generators;
 
 use Gettext\Translations;
@@ -12,7 +13,7 @@ class PhpArray extends Generator implements GeneratorInterface
     {
         $array = self::toArray($translations);
 
-        return '<?php return '.var_export($array, true).'; ?>';
+        return '<?php return ' . var_export($array, true) . '; ?>';
     }
 
     /**
@@ -24,13 +25,13 @@ class PhpArray extends Generator implements GeneratorInterface
      */
     public static function toArray(Translations $translations)
     {
-        $array = array();
+        $array = [];
 
         $context_glue = "\004";
 
         foreach ($translations as $translation) {
-            $key = ($translation->hasContext() ? $translation->getContext().$context_glue : '').$translation->getOriginal();
-            $entry = array($translation->getPlural(), $translation->getTranslation());
+            $key = ($translation->hasContext() ? $translation->getContext() . $context_glue : '') . $translation->getOriginal();
+            $entry = [$translation->getPlural(), $translation->getTranslation()];
 
             if ($translation->hasPluralTranslation()) {
                 $entry = array_merge($entry, $translation->getPluralTranslation());
@@ -42,17 +43,17 @@ class PhpArray extends Generator implements GeneratorInterface
         $domain = $translations->getDomain() ?: 'messages';
         $lang = $translations->getLanguage() ?: 'en';
 
-        $fullArray = array(
-            $domain => array(
-                '' => array(
+        $fullArray = [
+            $domain => [
+                '' => [
                     'domain' => $domain,
                     'lang' => $lang,
                     'plural-forms' => 'nplurals=2; plural=(n != 1);',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
 
-        if ($translations->getHeader('Plural-Forms') !== null) {
+        if (null !== $translations->getHeader('Plural-Forms')) {
             $fullArray[$domain]['']['plural-forms'] = $translations->getHeader('Plural-Forms');
         }
 

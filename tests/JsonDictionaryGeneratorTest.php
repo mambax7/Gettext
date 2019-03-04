@@ -1,14 +1,14 @@
 <?php
-include_once dirname(__DIR__).'/src/autoloader.php';
+require_once dirname(__DIR__) . '/src/autoloader.php';
 
 class JsonDictionaryGeneratorTest extends PHPUnit_Framework_TestCase
 {
     public function testGeneration()
     {
         //Extract translations
-        $translations = Gettext\Extractors\PhpCode::fromFile(__DIR__.'/files/phpcode.php');
+        $translations = Gettext\Extractors\PhpCode::fromFile(__DIR__ . '/files/phpcode.php');
         //verify existance of extracted translations
-        $this->assertEquals(12, count($translations));
+        $this->assertCount(12, $translations);
         $translation = $translations->find('', 'text 2');
         $this->assertInstanceOf('Gettext\\Translation', $translation);
         //set translation

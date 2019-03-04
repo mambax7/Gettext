@@ -1,9 +1,10 @@
 <?php
+
 namespace Gettext\Extractors;
 
 use Exception;
-use InvalidArgumentException;
 use Gettext\Translations;
+use InvalidArgumentException;
 
 abstract class Extractor
 {
@@ -17,7 +18,7 @@ abstract class Extractor
      */
     public static function fromFile($file, Translations $translations = null)
     {
-        if ($translations === null) {
+        if (null === $translations) {
             $translations = new Translations();
         }
 
@@ -50,11 +51,11 @@ abstract class Extractor
                 throw new InvalidArgumentException("'$file' is not a readable file");
             }
 
-            return array($file);
+            return [$file];
         }
 
         if (is_array($file)) {
-            $files = array();
+            $files = [];
 
             foreach ($file as $f) {
                 $files = array_merge($files, self::getFiles($f));
